@@ -1,0 +1,80 @@
+<apex:page showHeader="false" applyHtmlTag="false" applyBodyTag="false" standardStylesheets="false">
+    <div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div class="slds-m-around--xxx-small slds-m-bottom--large">
+            <form name="resultForm" novalidate="true">
+                <!-- メッセージ -->
+                <div class="slds-box slds-theme--info slds-m-bottom--small" ng-show="!!errorMessages.length">
+                    <p><span ng-bind="errorMessages"></span></p>
+                </div>
+                <!-- 取引先名 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.Name.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.Name"></span>
+                    </div>
+                </div>
+                <!-- 取引先番号 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.AccountNumber.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.AccountNumber"></span>
+                    </div>
+                </div>
+                <!-- 親取引先 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.ParentId.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="lookupAccount.Name"></span>
+                    </div>
+                </div>
+                <!-- Webサイト -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.Website.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.Website"></span>
+                    </div>
+                </div>
+                <!-- 郵便番号 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.BillingPostalCode.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.BillingPostalCode"></span>
+                    </div>
+                </div>
+                <!-- 国 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.BillingCountry.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.BillingCountry"></span>
+                    </div>
+                </div>
+                <!-- 都道府県 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.BillingState.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.BillingState"></span>
+                    </div>
+                </div>
+                <!-- 市区郡 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.BillingCity.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static" ng-bind="account.BillingCity"></span>
+                    </div>
+                </div>
+                <!-- 町名・番地 -->
+                <div class="slds-form-element slds-has-divider--bottom">
+                    <span class="slds-form-element__label">{!$ObjectType.Account.Fields.BillingStreet.Label}</span>
+                    <div class="slds-form-element__control">
+                        <span class="slds-form-element__static text-area-view" ng-bind="account.BillingStreet"></span>
+                    </div>
+                </div>
+                <div class="slds-m-top--small">
+                    <a href="#/edit/{{account.Id}}" class="slds-button slds-button--brand">編集</a>
+                    <button ng-click="delete($event, account.Id)" class="slds-button slds-button--destructive" ng-disabled="isLocked">削除</button>
+                    <a href="#/" class="slds-button slds-button--neutral">一覧に戻る</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</apex:page>

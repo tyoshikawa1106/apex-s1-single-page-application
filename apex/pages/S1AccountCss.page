@@ -1,0 +1,15 @@
+<apex:page >
+    <style type="text/css">
+        .text-area-view {
+            white-space: pre-line;
+        }
+        .text-area {
+            line-height: 1.5 !important;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+        .slds table {
+            background-color: rgba(0,0,255,0) !important;
+        }
+    </style>
+</apex:page>

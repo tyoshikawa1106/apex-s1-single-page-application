@@ -1,0 +1,29 @@
+<apex:page controller="S1AccountController" showHeader="false" applyHtmlTag="false" applyBodyTag="false" standardStylesheets="false" id="page">
+    <html lang="ja" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <!-- Meta -->
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+            <!-- AngularJS -->
+            <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.min.js" />
+            <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-route.js" />
+            <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-messages.js" />
+            <!-- Lightning Design System -->
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS100, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <!-- CSS -->
+            <apex:include pageName="S1AccountCss" />
+            <!-- Javascript -->
+            <apex:include pageName="S1CommonJs" />
+        </head>
+        <body>
+            <!-- myApp -->
+            <div ng-app="myApp">
+                <div ng-view="true" autoscroll="true"></div>
+            </div>
+            <!-- AngularJS -->
+            <apex:include pageName="S1AccountAppJs" />
+            <apex:include pageName="S1AccountControllerJs" />
+            <apex:include pageName="S1AccountServicesJs" />
+        </body>
+    </html>
+</apex:page>

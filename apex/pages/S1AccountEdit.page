@@ -1,0 +1,141 @@
+<apex:page showHeader="false" applyHtmlTag="false" applyBodyTag="false" standardStylesheets="false">
+    <div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div class="slds-m-around--xxx-small slds-m-bottom--large">
+            <!-- 入力フィールド -->
+            <form name="inputForm" novalidate="true">
+                <!-- メッセージ -->
+                <div class="slds-box slds-theme--info slds-m-bottom--small" ng-show="!!errorMessages.length">
+                    <p><span ng-bind="errorMessages"></span></p>
+                </div>
+                <!-- 取引先名 -->
+                <div class="slds-form-element slds-is-required" ng-class="{'slds-has-error': inputForm.accName.$invalid && inputForm.accName.$dirty}">
+                    <label class="slds-form-element__label" for="accName">{!$ObjectType.Account.Fields.Name.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="accName" ng-model="account.Name" class="slds-input" type="text" required="true" />
+                        <div ng-messages="inputForm.accName.$error" ng-if="inputForm.accName.$dirty">
+                            <div ng-message="required" class="slds-form-element__help">値を入力してください</div>
+                        </div>
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 取引先番号 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.accNumber.$invalid && inputForm.accNumber.$dirty}">
+                    <label class="slds-form-element__label" for="accNumber">{!$ObjectType.Account.Fields.AccountNumber.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="accNumber" ng-model="account.AccountNumber" class="slds-input" type="text" />
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 親取引先 -->
+                <div class="slds-lookup" data-select="single" data-scope="single" data-typeahead="true">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="lookup">{!$ObjectType.Account.Fields.ParentId.Label}</label>
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                            <!-- 親取引先・選択済み -->
+                            <div ng-show="!!lookupAccount.Id.length">
+                                <div class="slds-pill__container">
+                                    <a class="slds-pill">
+                                        <span class="slds-pill__icon slds-avatar">
+                                            <img ng-src="{{lookupAccount.PhotoUrl}}" alt="" />
+                                        </span>
+                                        <span class="slds-pill__label" ng-bind="lookupAccount.Name"></span>
+                                        <button class="slds-button slds-button--icon-bare slds-pill__remove" ng-click="removeLookupAccount($event)">
+                                            <svg aria-hidden="true" class="slds-button__icon">
+                                                <use xlink:href="/resource/SLDS100/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Remove</span>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- 親取引先入力 -->
+                            <div ng-hide="!!lookupAccount.Id.length">
+                                <svg aria-hidden="true" class="slds-input__icon">
+                                    <use xlink:href="/resource/SLDS0122/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                </svg>
+                                <input ng-model="lookupAccount.Name" class="slds-input" type="text" aria-autocomplete="list"
+                                    role="combobox" aria-expanded="true" aria-activedescendant="" ng-keyup="searchLookupAccount($event)" />
+                            </div>
+                            <div class="slds-form-element__help"></div>
+                        </div>
+                    </div>
+                    <!-- 親取引先選択リスト -->
+                    <div ng-show="!!lookupAccounts.length">
+                        <div class="slds-lookup__menu" role="listbox">
+                            <ul class="slds-lookup__list" role="presentation">
+                                <li class="slds-lookup__item" ng-repeat="item in lookupAccounts">
+                                    <a role="option" ng-click="setLookupAccount($event, $index)">
+                                        <span class="slds-pill__icon slds-avatar">
+                                            <img ng-src="{{item.PhotoUrl}}" width="50" style="border-radius: 50%;" />
+                                        </span>
+                                        <span ng-bind="item.Name" />
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="slds-form-element__help"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Webサイト -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.website.$invalid && inputForm.website.$dirty}">
+                    <label class="slds-form-element__label" for="website">{!$ObjectType.Account.Fields.Website.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="website" ng-model="account.Website" class="slds-input" type="url" />
+                        <div ng-messages="inputForm.website.$error" ng-if="inputForm.website.$dirty">
+                            <div ng-message="url" class="slds-form-element__help">不正なURLです</div>
+                        </div>
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 郵便番号 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.billingPostalCode.$invalid && inputForm.billingPostalCode.$dirty}">
+                    <label class="slds-form-element__label" for="billingPostalCode">{!$ObjectType.Account.Fields.BillingPostalCode.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="billingPostalCode" ng-model="account.BillingPostalCode" class="slds-input" type="tel" />
+                        <div ng-messages="inputForm.billingPostalCode.$error" ng-if="inputForm.billingPostalCode.$dirty">
+                            <div ng-message="tel" class="slds-form-element__help">不正な形式です</div>
+                        </div>
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 国 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.billingCountry.$invalid && inputForm.illingState.$dirty}">
+                    <label class="slds-form-element__label" for="billingCountry">{!$ObjectType.Account.Fields.BillingCountry.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="billingCountry" ng-model="account.BillingCountry" class="slds-input" type="text" />
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 都道府県 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.billingState.$invalid && inputForm.billingState.$dirty}">
+                    <label class="slds-form-element__label" for="billingState">{!$ObjectType.Account.Fields.BillingState.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="billingState" ng-model="account.BillingState" class="slds-input" type="text" />
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 市区郡 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.billingCity.$invalid && inputForm.billingCity.$dirty}">
+                    <label class="slds-form-element__label" for="billingCity">{!$ObjectType.Account.Fields.BillingCity.Label}</label>
+                    <div class="slds-form-element__control">
+                        <input name="billingCity" ng-model="account.BillingCity" class="slds-input" type="text" />
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- 町名・番地 -->
+                <div class="slds-form-element" ng-class="{'slds-has-error': inputForm.billingStreet.$invalid && inputForm.billingStreet.$dirty}">
+                    <label class="slds-form-element__label" for="billingStreet">{!$ObjectType.Account.Fields.BillingStreet.Label}</label>
+                    <div class="slds-form-element__control">
+                        <textarea name="billingStreet" ng-model="account.BillingStreet" class="slds-input text-area" rows="10" />
+                        <div class="slds-form-element__help"></div>
+                    </div>
+                </div>
+                <!-- ボタン -->
+                <div class="slds-m-top--small">
+                    <button ng-click="save($event)" class="slds-button slds-button--brand" ng-disabled="inputForm.$invalid || isLocked">保存</button>
+                    <a href="#/" class="slds-button slds-button--neutral">キャンセル</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</apex:page>

@@ -1,0 +1,189 @@
+<apex:page >
+    <script type="text/javascript">
+        var app = angular.module("Services", [])
+
+        // S1AccountListServices
+        app.factory("S1AccountListServices", ["$rootScope", function($rootScope) {
+            // 初期処理
+            function init(scope) {
+                getAccounts(scope);
+            }
+
+            // 取引先リスト取得
+            function getAccounts(scope) {
+                // 初期化
+                scope.errorMessages = [];
+                // Apex
+                S1AccountController.getAccounts(function(results, event) {
+                    if(event.status) {
+                        scope.accounts = results;
+                        // Viewに反映
+                        $rootScope.$apply();
+                    } else {
+                        scope.errorMessages = event.message;
+                        console.log(event.message);
+                    }
+                });
+            }
+
+            // 取引先の削除
+            function deleteAccount(scope, recordId, index) {
+                // 初期化
+                scope.errorMessages = [];
+                // Apex
+                S1AccountController.deleteAccount(recordId, function(result, event) {
+                    if(event.status) {
+                        if (result.errorMessages.length > 0) {
+                            // エラーメッセージを表示
+                            scope.errorMessages = result.errorMessages;
+                        } else {
+                            // リストから除外
+                            scope.accounts.splice(index, 1);
+                        }
+                        // ロック解除
+                        scope.isLocked = false;
+                        // Viewに反映
+                        $rootScope.$apply();
+                    } else {
+                        scope.errorMessages = event.message;
+                        console.log(event.message);
+                    }
+                });
+            }
+
+            return {
+                init: function(scope) {
+                    return init(scope);
+                },
+                delete: function(scope, recordId, index) {
+                    return deleteAccount(scope, recordId, index);
+                }
+            };
+        }]);
+
+        // S1AccountServices
+        app.factory("S1AccountServices", ["$rootScope", function($rootScope) {
+            // 初期処理
+            function init(scope, recordId) {
+                getAccount(scope, recordId);
+            }
+
+            // 取引先の取得
+            function getAccount(scope, recordId) {
+                // Apex
+                S1AccountController.getAccount(recordId, function(result, event) {
+                    if(event.status) {
+                        scope.account = result;
+                        // 親取引先ID存在判定
+                        if (result.ParentId) {
+                            scope.lookupAccount = {
+                                Id : result.ParentId,
+                                Name : result.Parent.Name,
+                                PhotoUrl : result.Parent.PhotoUrl
+                            }
+                        }
+                        // Viewに反映
+                        $rootScope.$apply();
+                    } else {
+                        scope.errorMessages = event.message;
+                        console.log(event.message);
+                    }
+                });
+            }
+
+            // 取引先の削除
+            function deleteAccount(scope, recordId) {
+                // Apex
+                S1AccountController.deleteAccount(recordId, function(result, event) {
+                    if(event.status) {
+                        if (result.errorMessages.length > 0) {
+                            // エラーメッセージを表示
+                            scope.errorMessages = result.errorMessages;
+                        } else {
+                            // 一覧ページに遷移
+                            location.href = "#/";
+                        }
+                        // ロック解除
+                        scope.isLocked = false;
+                        // Viewに反映
+                        $rootScope.$apply();
+                    } else {
+                        scope.errorMessages = event.message;
+                        console.log(event.message);
+                    }
+                });
+            }
+
+            // 取引先の登録
+            function saveAccount(scope, recordId) {
+                // 親取引先ID
+                if (scope.lookupAccount.Id) {
+                    scope.account.ParentId = scope.lookupAccount.Id;
+                } else {
+                    scope.account.ParentId = null;
+                }
+                // Apex
+                S1AccountController.saveAccount(scope.account, function(result, event) {
+                    if(event.status) {
+                        if (result.errorMessages.length > 0) {
+                            // エラーメッセージを表示
+                            scope.errorMessages = result.errorMessages;
+                        } else {
+                            // 一覧ページに遷移
+                            location.href = "#/view/" + result.recordId;
+                        }
+                        // ロック解除
+                        scope.isLocked = false;
+                        // Viewに反映
+                        $rootScope.$apply();
+                    } else {
+                        scope.errorMessages = event.message;
+                        console.log(event.message);
+                    }
+                });
+            }
+
+            // 取引先ルックアップ一覧取得
+            function searchLookupAccount(scope) {
+                var accountName = scope.lookupAccount.Name;
+                S1AccountController.getLookupAccounts(accountName, function(results, event) {
+                        if(event.status) {
+                            scope.lookupAccounts = results;
+                        } else {
+                            scope.errorMessages = event.message;
+                            console.log(event.message);
+                        }
+                        // Viewに反映
+                        $rootScope.$apply();
+                });
+            }
+
+            return {
+                init: function(scope, prmRecordId) {
+                    var recordId = null;
+                    if (prmRecordId) {
+                        recordId = prmRecordId;
+                    }
+                    return init(scope, recordId);
+                },
+                delete: function(scope, prmRecordId) {
+                    var recordId = null;
+                    if (prmRecordId) {
+                        recordId = prmRecordId;
+                    }
+                    return deleteAccount(scope, recordId);
+                },
+                save: function(scope, prmRecordId) {
+                    var recordId = null;
+                    if (prmRecordId) {
+                        recordId = prmRecordId;
+                    }
+                    return saveAccount(scope, recordId);
+                },
+                searchLookupAccount: function(scope) {
+                    return searchLookupAccount(scope);
+                }
+            };
+        }]);
+    </script>
+</apex:page>

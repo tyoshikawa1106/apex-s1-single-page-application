@@ -1,0 +1,122 @@
+<apex:page >
+    <script type="text/javascript">
+        (function(){
+            "use strict";
+
+            var app = angular.module("Controllers", ["Services"]);
+
+            // 例外処理
+            app.factory("$exceptionHandler", function () {
+                return function (exception, cause) {
+                    console.log(exception.message);
+                };
+            });
+        
+            // S1AccountListCtrl
+            app.controller("S1AccountListCtrl", ["$scope", "S1AccountListServices", function($scope, helper) {
+                try {
+                    // エラーメッセージ
+                    $scope.errorMessages = [];
+                    // 操作ブロック
+                    $scope.isLocked = false;
+
+                    // 初期処理
+                    helper.init($scope);
+
+                    // 削除ボタン
+                    $scope.delete = function(event, index) {
+                        event.preventDefault();
+                        // ロック中の場合処理スキップ
+                        if ($scope.isLocked) return false;
+                        // 初期化
+                        $scope.errorMessages = [];
+                        // IDをセット
+                        var recordId = $scope.accounts[index].Id;
+                        // ロック
+                        $scope.isLocked = true;
+                        // 削除処理実行
+                        helper.delete($scope, recordId, index);
+                    }
+                } catch (e) {
+                    throw e;
+                }
+            }]);
+
+            // S1AccountViewCtrl
+            app.controller("S1AccountViewCtrl", ["$scope", "$routeParams", "S1AccountServices", function($scope, $routeParams, helper) {
+                try {
+                    // 初期処理
+                    helper.init($scope, $routeParams.id);
+
+                    // 削除ボタン
+                    $scope.delete = function(event) {
+                        event.preventDefault();
+                        // 初期化
+                        $scope.errorMessages = [];
+                        // ロック
+                        $scope.isLocked = true;
+                        // 削除処理実行
+                        helper.delete($scope, $routeParams.id);
+                    };
+                } catch (e) {
+                    throw e;
+                }
+            }]);
+        
+            // S1AccountEditCtrl
+            app.controller("S1AccountEditCtrl", ["$scope", "$routeParams", "S1AccountServices", function($scope, $routeParams, helper) {
+                try {
+                    $scope.lookupAccount = {
+                        Id : null,
+                        Name : '',
+                        PhotoUrl: ''
+                    };
+                
+                    // 初期処理
+                    helper.init($scope, $routeParams.id);
+
+                    // 保存ボタン
+                    $scope.save = function(event) {
+                        event.preventDefault();
+                        // 初期化
+                        $scope.errorMessages = [];
+                        // ロック
+                        $scope.isLocked = true;
+                        // 保存処理実行
+                        helper.save($scope, $routeParams.id);
+                    };
+
+                    // 親取引先をクリア
+                    $scope.removeLookupAccount = function(event) {
+                        event.preventDefault();
+                        // クリア
+                        $scope.lookupAccount = {
+                            Id : null,
+                            Name : '',
+                            PhotoUrl: ''
+                        };
+                        // リストクリア
+                        $scope.lookupAccounts = [];
+                    };
+
+                    // 親取引先をリアルタイム検索
+                    $scope.searchLookupAccount = function(event) {
+                        event.preventDefault();
+                        helper.searchLookupAccount($scope);
+                    };
+
+                    // 親取引先をセット
+                    $scope.setLookupAccount = function(event, index) {
+                        $scope.lookupAccount.Id = $scope.lookupAccounts[index].Id;
+                        $scope.lookupAccount.Name = $scope.lookupAccounts[index].Name;
+                        $scope.lookupAccount.PhotoUrl = $scope.lookupAccounts[index].PhotoUrl;
+                        // リストクリア
+                        $scope.lookupAccounts = [];
+                    }
+                } catch (e) {
+                    throw e;
+                }
+            }]);
+        })();
+    </script>
+</apex:page>

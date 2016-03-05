@@ -1,0 +1,39 @@
+<apex:page >
+    <script type="text/javascript">
+
+        // Salesforce1 - page automatically scrolls to top when user taps on a page element on iOS devices only
+        // https://success.salesforce.com/issues_view?id=a1p30000000T2oLAAS
+
+        // (1)
+        (function(){try{var a=navigator.userAgent; 
+        if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('Safari')==-1)){ 
+        var s=document.createElement('style'); 
+        s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+        document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+
+        // (2)
+        var ua=navigator.userAgent; 
+        if((ua.indexOf('Salesforce')!=-1)&&(ua.indexOf('iPhone')!=-1||ua.indexOf('iPad')!=-1)&&(ua.indexOf('Safari')==-1)){ 
+        function IOS_SCROLL_BOOTSTRAP() { 
+        var children = Array.prototype.slice.call(document.body.children), 
+        placeholder = document.createElement('section'), 
+        fragment = document.createDocumentFragment(), 
+        styles, 
+        width, 
+        height; 
+        children.forEach(function(c){fragment.appendChild(c);}); 
+        placeholder.appendChild(fragment); 
+        styles = [ 
+        'width:100%;', 
+        'height:', (window.screen.height - 42), 'px;', 
+        'position: absolute; overflow: auto; -webkit-overflow-scrolling: touch' 
+        ].join(''); 
+        placeholder.style.cssText = styles; 
+        document.body.appendChild(placeholder); 
+        } 
+        window.addEventListener('load', function (e) { 
+        IOS_SCROLL_BOOTSTRAP(); 
+        }); 
+        } 
+    </script>
+</apex:page>

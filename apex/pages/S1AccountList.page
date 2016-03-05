@@ -1,0 +1,72 @@
+<apex:page showHeader="false" applyHtmlTag="false" applyBodyTag="false" standardStylesheets="false">
+    <div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div class="slds-m-around--xxx-small slds-m-bottom--large">
+            <!-- メッセージ -->
+            <div class="slds-box slds-theme--info slds-m-bottom--small" ng-show="!!errorMessages.length">
+                <p><span ng-bind="errorMessages"></span></p>
+            </div>
+            <div class="slds-m-top--small">
+                <a href="#/edit">
+                    <svg aria-hidden="true" class="slds-icon slds-icon-action-edit slds-icon--medium slds-p-around--x-small">
+                        <use xlink:href="{!URLFOR($Resource.SLDS100, '/assets/icons/action-sprite/svg/symbols.svg#edit')}"></use>
+                    </svg>
+                </a>
+            </div>
+            <div class="slds-m-top--small">
+                <input type="text" class="slds-input" ng-model="query" placeholder="Please Account Name..." />
+            </div>
+            <div class="slds-m-top--small">
+                <table class="slds-table slds-table--bordered" cellpadding="0" cellspacing="0" border="0">
+                    <colgroup>
+                        <col width="50"></col>
+                        <col></col>
+                        <col width="150"></col>
+                    </colgroup>
+                    <thead>
+                        <tr class="slds-text-heading--label">
+                            <th></th>
+                            <th>{!$ObjectType.Account.Fields.Name.Label}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in accounts | filter:query">
+                            <td style="padding: 2px;">
+                                <img ng-src="{{item.PhotoUrl}}" width="50" style="border-radius: 5px;" />
+                            </td>
+                            <td>
+                                <a href="#/view/{{item.Id}}">
+                                    <span ng-bind="item.Name" />
+                                </a>
+                            </td>
+                            <td class="slds-text-align--right">
+                                <div class="slds-dropdown-trigger" aria-expanded="true">
+                                    <button class="slds-button slds-button--icon-border-filled" aria-haspopup="true">
+                                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--hint">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS100, '/assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Show More</span>
+                                    </button>
+                                    <div class="slds-dropdown slds-dropdown--right slds-dropdown--actions slds-dropdown--menu">
+                                        <ul class="dropdown__list" role="menu">
+                                            <li class="slds-dropdown__item">
+                                                <a href="#/edit/{{item.Id}}" role="menuitem">
+                                                    <p class="slds-truncate">編集</p>
+                                                </a>
+                                            </li>
+                                            <li class="slds-dropdown__item">
+                                                <a ng-click="delete($event, $index)" role="menuitem">
+                                                    <p class="slds-truncate">削除</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</apex:page>
