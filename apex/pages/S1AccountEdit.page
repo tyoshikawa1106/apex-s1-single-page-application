@@ -51,7 +51,7 @@
                             <!-- 親取引先入力 -->
                             <div ng-hide="!!lookupAccount.Id.length">
                                 <svg aria-hidden="true" class="slds-input__icon">
-                                    <use xlink:href="/resource/SLDS0122/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+                                    <use xlink:href="/resource/SLDS100/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
                                 </svg>
                                 <input ng-model="lookupAccount.Name" class="slds-input" type="text" aria-autocomplete="list"
                                     role="combobox" aria-expanded="true" aria-activedescendant="" ng-keyup="searchLookupAccount($event)" />
